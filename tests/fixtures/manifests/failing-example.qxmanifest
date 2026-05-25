@@ -1,0 +1,63 @@
+{
+  "$schema": "https://qxengine.io/manifest/v1.0/schema.json",
+  "meta": {
+    "spec_version": "0.9.0",
+    "generated_by": "qxengine-core-tests",
+    "validated_at": "2026-05-25"
+  },
+  "identity": {
+    "app_id": "failingapp",
+    "app_name": "FailingApp",
+    "owner": "",
+    "version": "1.0.0",
+    "created": "24/05/2026",
+    "platform": "ios",
+    "minimum_engine_version": "1.0.0"
+  },
+  "law_compliance": {
+    "law1_pattern": true,
+    "law2_limit": false,
+    "law3_pairs": true,
+    "law4_equilibrium": true,
+    "law5_knowledge": true,
+    "law6_ethics": true,
+    "law7_creativity": true,
+    "law8_economy": true
+  },
+  "limit": {
+    "memory_soft_limit_mb": 32.0,
+    "memory_hard_limit_mb": 16.0,
+    "segments": [
+      { "id": "QLM-CORE", "name": "Core Engine", "budget_percent": 40.0, "soft_limit_mb": 1.0, "hard_limit_mb": 2.0 },
+      { "id": "QLM-CORE", "name": "Duplicate Core", "budget_percent": 40.0, "soft_limit_mb": 1.0, "hard_limit_mb": 2.0 },
+      { "id": "QLM-UNKNOWN", "name": "Unknown", "budget_percent": 30.0, "soft_limit_mb": 1.0, "hard_limit_mb": 1.0 }
+    ]
+  },
+  "ethics": {
+    "dark_patterns_prohibited": false,
+    "deceptive_flows_prohibited": true,
+    "manipulative_ux_prohibited": false,
+    "privacy_first_design": true,
+    "transparent_data_usage": true
+  },
+  "creativity": {
+    "native_first_policy": false,
+    "native_utilisation_target": 1.5,
+    "native_capabilities": []
+  },
+  "knowledge": {
+    "snapshot_interval_seconds": 0.0,
+    "min_knowledge_score": 50.0,
+    "telemetry_enabled": false
+  },
+  "economy": {
+    "network_budget_mb_per_session": 0.0,
+    "battery_drain_max_pct_per_10min": 15.0,
+    "commerce_model": "dark-funnel",
+    "network_redundancy_max_pct": 25.0
+  },
+  "verticals": {
+    "primary": "",
+    "secondary": []
+  }
+}

@@ -52,7 +52,7 @@ QXResult parse_manifest_file(
 TEST(QXManifestGolden, QiubbxReferenceManifestPasses) {
     QXManifestValidationResult result{};
     EXPECT_EQ(parse_manifest_file(
-        "../qxengine-examples/manifests/qiubbx.qxmanifest",
+        "tests/fixtures/manifests/qiubbx.qxmanifest",
         &result), QX_OK);
     EXPECT_EQ(result.is_valid, QX_TRUE);
 }
@@ -60,7 +60,7 @@ TEST(QXManifestGolden, QiubbxReferenceManifestPasses) {
 TEST(QXManifestGolden, MinimalReferenceManifestPasses) {
     QXManifestValidationResult result{};
     EXPECT_EQ(parse_manifest_file(
-        "../qxengine-examples/manifests/minimal-app.qxmanifest",
+        "tests/fixtures/manifests/minimal-app.qxmanifest",
         &result), QX_OK);
     EXPECT_EQ(result.is_valid, QX_TRUE);
 }
@@ -68,7 +68,7 @@ TEST(QXManifestGolden, MinimalReferenceManifestPasses) {
 TEST(QXManifestGolden, FailingReferenceManifestFails) {
     QXManifestValidationResult result{};
     EXPECT_NE(parse_manifest_file(
-        "../qxengine-examples/manifests/failing-example.qxmanifest",
+        "tests/fixtures/manifests/failing-example.qxmanifest",
         &result), QX_OK);
     EXPECT_EQ(result.is_valid, QX_FALSE);
     EXPECT_GT(result.error_count, 0u);

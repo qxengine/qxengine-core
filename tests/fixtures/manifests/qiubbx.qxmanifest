@@ -1,0 +1,74 @@
+{
+  "$schema": "https://qxengine.io/manifest/v1.0/schema.json",
+  "meta": {
+    "spec_version": "1.0.0",
+    "generated_by": "qxengine-core-tests",
+    "validated_at": "2026-05-25"
+  },
+  "identity": {
+    "app_id": "com.qiubbx.app",
+    "app_name": "QIUBBX",
+    "owner": "Masa Bayu",
+    "version": "1.0.0",
+    "created": "2026-05-24",
+    "platform": "ios",
+    "minimum_engine_version": "1.0.0"
+  },
+  "law_compliance": {
+    "law1_pattern": true,
+    "law2_limit": true,
+    "law3_pairs": true,
+    "law4_equilibrium": true,
+    "law5_knowledge": true,
+    "law6_ethics": true,
+    "law7_creativity": true,
+    "law8_economy": true
+  },
+  "limit": {
+    "memory_soft_limit_mb": 384.0,
+    "memory_hard_limit_mb": 512.0,
+    "segments": [
+      { "id": "QLM-CORE", "name": "Core Engine", "budget_percent": 20.0, "soft_limit_mb": 76.8, "hard_limit_mb": 102.4 },
+      { "id": "QLM-UI", "name": "User Interface", "budget_percent": 18.0, "soft_limit_mb": 69.12, "hard_limit_mb": 92.16 },
+      { "id": "QLM-DATA", "name": "Data", "budget_percent": 15.0, "soft_limit_mb": 57.6, "hard_limit_mb": 76.8 },
+      { "id": "QLM-IMG", "name": "Images", "budget_percent": 15.0, "soft_limit_mb": 57.6, "hard_limit_mb": 76.8 },
+      { "id": "QLM-NET", "name": "Network", "budget_percent": 12.0, "soft_limit_mb": 46.08, "hard_limit_mb": 61.44 },
+      { "id": "QLM-AI", "name": "Artificial Intelligence", "budget_percent": 10.0, "soft_limit_mb": 38.4, "hard_limit_mb": 51.2 },
+      { "id": "QLM-SEC", "name": "Security", "budget_percent": 5.0, "soft_limit_mb": 19.2, "hard_limit_mb": 25.6 },
+      { "id": "QLM-LOG", "name": "Telemetry Log", "budget_percent": 3.0, "soft_limit_mb": 11.52, "hard_limit_mb": 15.36 },
+      { "id": "QLM-TEMP", "name": "Temporary Work", "budget_percent": 2.0, "soft_limit_mb": 7.68, "hard_limit_mb": 10.24 }
+    ]
+  },
+  "ethics": {
+    "dark_patterns_prohibited": true,
+    "deceptive_flows_prohibited": true,
+    "manipulative_ux_prohibited": true,
+    "privacy_first_design": true,
+    "transparent_data_usage": true
+  },
+  "creativity": {
+    "native_first_policy": true,
+    "native_utilisation_target": 0.85,
+    "native_capabilities": [
+      { "id": "avfoundation", "name": "AVFoundation", "declared": true },
+      { "id": "coreml", "name": "Core ML", "declared": true },
+      { "id": "metal", "name": "Metal Renderer", "declared": true },
+      { "id": "secure_enclave", "name": "Secure Enclave", "declared": true }
+    ]
+  },
+  "knowledge": {
+    "snapshot_interval_seconds": 5.0,
+    "min_knowledge_score": 95.0,
+    "telemetry_enabled": true
+  },
+  "economy": {
+    "network_budget_mb_per_session": 52.0,
+    "battery_drain_max_pct_per_10min": 2.5,
+    "commerce_model": "success-aligned",
+    "network_redundancy_max_pct": 8.0
+  },
+  "verticals": {
+    "primary": "commerce",
+    "secondary": ["logistics", "finance", "education"]
+  }
+}
