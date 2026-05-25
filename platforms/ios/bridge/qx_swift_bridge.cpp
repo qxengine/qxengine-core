@@ -4,29 +4,18 @@
  * Repository : https://github.com/qxengine/qxengine-core
  * Owner      : Masa Bayu
  * Created    : 2026-05-24
- * Purpose    : Thin C wrapper layer consumed by Swift via a bridging header.
- *              All functions follow the qx_ios_* naming convention and map
- *              1-to-1 to qx_engine_* C ABI calls. No ObjC runtime required.
- *              Swift callers store the engine handle as an OpaquePointer.
+ * Purpose    : Thin C wrapper consumed by Swift via dynamic symbols or module map.
  * =========================================================================== */
-#include <cstring>
+
 #include <cstdint>
 #include <cstdio>
+#include <cstring>
 
 #include "qxengine/qxengine.h"
-#include "qxengine/manifest/qx_manifest.h"
-#include "qxengine/law/qx_law_report.h"
-#include "qxengine/intelligence/qx_snapshot_types.h"
 
-/* -------------------------------------------------------------------------- */
-/* Macros                                                                      */
-/* -------------------------------------------------------------------------- */
-#define QX_IOS_LOG(fmt, ...)  std::fprintf(stderr, "[QXEngine/iOS] " fmt "\n", ##__VA_ARGS__)
-#define QX_IOS_ERR(fmt, ...)  std::fprintf(stderr, "[QXEngine/iOS][ERR] " fmt "\n", ##__VA_ARGS__)
+#define QX_IOS_LOG(fmt, ...) std::fprintf(stderr, "[QXEngine/iOS] " fmt "\n", ##__VA_ARGS__)
+#define QX_IOS_ERR(fmt, ...) std::fprintf(stderr, "[QXEngine/iOS][ERR] " fmt "\n", ##__VA_ARGS__)
 
-/* -------------------------------------------------------------------------- */
-/* Helper – null guard                                                         */
-/* -------------------------------------------------------------------------- */
 static inline bool qx_ios_null_guard(const void* ptr, const char* name)
 {
     if (!ptr) {
@@ -36,39 +25,25 @@ static inline bool qx_ios_null_guard(const void* ptr, const char* name)
     return false;
 }
 
-/* ========================================================================== */
-/* Engine lifecycle                                                            */
-/* ========================================================================== */
-
-/* qx_ios_engine_create
- * Parameters : manifest_json – UTF-8 JSON string (caller owns)
- * Returns    : opaque engine handle, or NULL on failure
- * Swift sig  : qx_ios_engine_create(manifest_json: UnsafePointer<CChar>?)
- *              -> OpaquePointer?
- */
-extern "C" void* qx_ios_engine_create(const char* manifest_json)
+extern "C" void* qx_ios_engine_create(const char* manifest_json,
+                                      uint32_t manifest_json_length,
+                                      uint64_t device_ram_bytes,
+                                      int verify_integrity,
+                                      int verbose)
 {
     if (qx_ios_null_guard(manifest_json, "manifest_json")) return nullptr;
 
-    QXManifestHandle manifest = nullptr;
-    QXManifestValidationResult result;
-    std::memset(&result, 0, sizeof(result));
-
-    QXError err = qx_manifest_parse(manifest_json, &manifest, &result);
-    if (err != QX_OK || !result.is_valid) {
-        QX_IOS_ERR("manifest parse failed error_count=%u", result.error_count);
-        return nullptr;
-    }
-
-    QXEngineConfig cfg;
-    std::memset(&cfg, 0, sizeof(cfg));
-    cfg.manifest = manifest;
+    QXEngineConfig cfg{};
+    cfg.manifest_json = manifest_json;
+    cfg.manifest_json_length = manifest_json_length;
+    cfg.device_ram_bytes = device_ram_bytes;
+    cfg.verify_integrity = verify_integrity ? QX_TRUE : QX_FALSE;
+    cfg.verbose = verbose ? QX_TRUE : QX_FALSE;
 
     QXEngineHandle engine = nullptr;
-    err = qx_engine_create(&cfg, &engine);
-    if (err != QX_OK || !engine) {
-        QX_IOS_ERR("qx_engine_create failed err=%d", err);
-        qx_manifest_destroy(manifest);
+    const QXResult rc = qx_engine_create(&cfg, &engine);
+    if (rc != QX_OK || !engine) {
+        QX_IOS_ERR("qx_engine_create failed rc=%d", rc);
         return nullptr;
     }
 
@@ -76,136 +51,95 @@ extern "C" void* qx_ios_engine_create(const char* manifest_json)
     return static_cast<void*>(engine);
 }
 
-/* qx_ios_engine_destroy
- * Swift sig  : qx_ios_engine_destroy(handle: OpaquePointer?)
- */
+extern "C" int qx_ios_engine_start(void* handle)
+{
+    if (qx_ios_null_guard(handle, "handle")) return QX_ERR_NULL_HANDLE;
+    return qx_engine_start(static_cast<QXEngineHandle>(handle));
+}
+
+extern "C" int qx_ios_engine_stop(void* handle)
+{
+    if (qx_ios_null_guard(handle, "handle")) return QX_ERR_NULL_HANDLE;
+    return qx_engine_stop(static_cast<QXEngineHandle>(handle));
+}
+
 extern "C" void qx_ios_engine_destroy(void* handle)
 {
-    if (qx_ios_null_guard(handle, "handle")) return;
+    if (!handle) return;
     qx_engine_destroy(static_cast<QXEngineHandle>(handle));
-    QX_IOS_LOG("engine destroyed handle=%p", handle);
 }
 
-/* ========================================================================== */
-/* Allocation                                                                  */
-/* ========================================================================== */
-
-/* qx_ios_engine_alloc
- * Returns    : opaque leaf handle, or NULL on failure
- * Swift sig  : qx_ios_engine_alloc(handle:segmentId:sizeBytes:label:evictClass:)
- *              -> OpaquePointer?
- */
-extern "C" void* qx_ios_engine_alloc(void*       handle,
-                                      uint8_t     segment_id,
-                                      size_t      size_bytes,
-                                      const char* label,
-                                      int         evict_class)
+extern "C" int qx_ios_engine_notify_memory_pressure(void* handle,
+                                                     uint8_t pressure_level)
 {
-    if (qx_ios_null_guard(handle, "handle")) return nullptr;
-
-    QXLeafHandle leaf = nullptr;
-    QXError err = qx_engine_alloc(
+    if (qx_ios_null_guard(handle, "handle")) return QX_ERR_NULL_HANDLE;
+    return qx_engine_notify_memory_pressure(
         static_cast<QXEngineHandle>(handle),
-        segment_id,
-        size_bytes,
-        label ? label : "",
-        static_cast<QXEvictClass>(evict_class),
-        &leaf
+        pressure_level
     );
-    if (err != QX_OK || !leaf) {
-        QX_IOS_ERR("qx_engine_alloc failed err=%d", err);
-        return nullptr;
-    }
-    return static_cast<void*>(leaf);
 }
 
-/* qx_ios_engine_free
- * Returns    : 1 on success, 0 on failure
- * Swift sig  : qx_ios_engine_free(handle:leafHandle:) -> Int32
- */
-extern "C" int qx_ios_engine_free(void* handle, void* leaf_handle)
+extern "C" int qx_ios_engine_feed_memory_reading(void* handle,
+                                                  uint64_t resident_bytes,
+                                                  uint64_t system_total,
+                                                  uint64_t system_avail)
 {
-    if (qx_ios_null_guard(handle,      "handle"))      return 0;
-    if (qx_ios_null_guard(leaf_handle, "leaf_handle")) return 0;
-    return qx_engine_free(
+    if (qx_ios_null_guard(handle, "handle")) return QX_ERR_NULL_HANDLE;
+    return qx_engine_feed_memory_reading(
         static_cast<QXEngineHandle>(handle),
-        static_cast<QXLeafHandle>(leaf_handle)
-    ) == QX_OK ? 1 : 0;
+        resident_bytes,
+        system_total,
+        system_avail
+    );
 }
 
-/* ========================================================================== */
-/* Evaluation                                                                  */
-/* ========================================================================== */
-
-/* qx_ios_engine_evaluate
- * Returns    : health score [0.0 – 100.0], or -1.0 on failure
- * Swift sig  : qx_ios_engine_evaluate(handle: OpaquePointer?) -> Double
- */
-extern "C" double qx_ios_engine_evaluate(void* handle)
+extern "C" int qx_ios_engine_update_battery_drain(void* handle,
+                                                   double drain_pct)
 {
-    if (qx_ios_null_guard(handle, "handle")) return -1.0;
-
-    QXLawReport report;
-    std::memset(&report, 0, sizeof(report));
-    if (qx_engine_evaluate(static_cast<QXEngineHandle>(handle),
-                           &report) != QX_OK) return -1.0;
-
-    QX_IOS_LOG("evaluate health_score=%.2f", report.health_score);
-    return report.health_score;
+    if (qx_ios_null_guard(handle, "handle")) return QX_ERR_NULL_HANDLE;
+    return qx_engine_update_battery_drain(
+        static_cast<QXEngineHandle>(handle),
+        drain_pct
+    );
 }
 
-/* ========================================================================== */
-/* Snapshot                                                                    */
-/* ========================================================================== */
-
-/* qx_ios_engine_snapshot
- * Returns    : knowledge score [0.0 – 100.0], or -1.0 on failure
- * Swift sig  : qx_ios_engine_snapshot(handle: OpaquePointer?) -> Double
- */
-extern "C" double qx_ios_engine_snapshot(void* handle)
+extern "C" int qx_ios_engine_update_network_redundancy(void* handle,
+                                                        double redundancy_pct)
 {
-    if (qx_ios_null_guard(handle, "handle")) return -1.0;
-
-    QXCognitiveSnapshot snap;
-    std::memset(&snap, 0, sizeof(snap));
-    if (qx_engine_snapshot(static_cast<QXEngineHandle>(handle),
-                           &snap) != QX_OK) return -1.0;
-
-    return snap.knowledge_score;
+    if (qx_ios_null_guard(handle, "handle")) return QX_ERR_NULL_HANDLE;
+    return qx_engine_update_network_redundancy(
+        static_cast<QXEngineHandle>(handle),
+        redundancy_pct
+    );
 }
 
-/* ========================================================================== */
-/* Pressure                                                                    */
-/* ========================================================================== */
-
-/* qx_ios_engine_pressure_warning
- * Parameters : ram_used_ratio – fraction of RAM in use [0.0 – 1.0]
- * Returns    : 1 on success, 0 on failure
- * Swift sig  : qx_ios_engine_pressure_warning(handle:ramUsedRatio:) -> Int32
- */
-extern "C" int qx_ios_engine_pressure_warning(void* handle, double ram_used_ratio)
+extern "C" int qx_ios_engine_mark_capability_active(void* handle,
+                                                     const char* capability_id)
 {
-    if (qx_ios_null_guard(handle, "handle")) return 0;
-    QX_IOS_LOG("memory pressure warning ram_used=%.2f", ram_used_ratio);
-    return qx_engine_pressure_ios(
-        static_cast<QXEngineHandle>(handle), ram_used_ratio
-    ) == QX_OK ? 1 : 0;
+    if (qx_ios_null_guard(handle, "handle")) return QX_ERR_NULL_HANDLE;
+    if (qx_ios_null_guard(capability_id, "capability_id")) return QX_ERR_NULL_HANDLE;
+    return qx_engine_mark_capability_active(
+        static_cast<QXEngineHandle>(handle),
+        capability_id
+    );
 }
 
-/* ========================================================================== */
-/* Stats                                                                       */
-/* ========================================================================== */
-
-/* qx_ios_engine_stats
- * Fills caller-supplied QXEngineStats struct.
- * Returns    : 1 on success, 0 on failure
- * Swift sig  : qx_ios_engine_stats(handle:stats:) -> Int32
- */
-extern "C" int qx_ios_engine_stats(void* handle, QXEngineStats* out_stats)
+extern "C" int qx_ios_engine_evaluate_now(void* handle)
 {
-    if (qx_ios_null_guard(handle,    "handle"))    return 0;
-    if (qx_ios_null_guard(out_stats, "out_stats")) return 0;
-    return qx_engine_stats(
-        static_cast<QXEngineHandle>(handle), out_stats
-    ) == QX_OK ? 1 : 0;
+    if (qx_ios_null_guard(handle, "handle")) return QX_ERR_NULL_HANDLE;
+    return qx_engine_evaluate_now(static_cast<QXEngineHandle>(handle));
+}
+
+extern "C" int qx_ios_engine_integrity_status(void* handle, int* out_status)
+{
+    if (qx_ios_null_guard(handle, "handle")) return QX_ERR_NULL_HANDLE;
+    if (qx_ios_null_guard(out_status, "out_status")) return QX_ERR_NULL_HANDLE;
+
+    QXIntegrityStatus status = QX_INTEGRITY_STATUS_UNKNOWN;
+    const QXResult rc = qx_engine_integrity_status(
+        static_cast<QXEngineHandle>(handle),
+        &status
+    );
+    if (rc == QX_OK) *out_status = static_cast<int>(status);
+    return rc;
 }

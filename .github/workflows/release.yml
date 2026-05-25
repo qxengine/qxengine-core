@@ -1,0 +1,79 @@
+name: QXEngine Core Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Package and Publish Core
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate semantic version tag
+        run: |
+          TAG_NAME="${GITHUB_REF_NAME}"
+          if [[ ! "${TAG_NAME}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "Release tags must use semantic versioning, e.g. v1.0.0 or v1.0.0-rc.1"
+            exit 1
+          fi
+
+      - name: Configure release build
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DQX_BUILD_TESTS=ON
+
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Install package tree
+        run: |
+          TAG_NAME="${GITHUB_REF_NAME}"
+          PACKAGE_DIR="qxengine-core-${TAG_NAME}-macos"
+          cmake --install build --prefix "dist/${PACKAGE_DIR}"
+          mkdir -p artifacts
+          tar -czf "artifacts/${PACKAGE_DIR}.tar.gz" -C dist "${PACKAGE_DIR}"
+
+      - name: Generate checksums
+        run: |
+          cd artifacts
+          shasum -a 256 * > SHA256SUMS.txt
+
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: qxengine-core-release
+          path: artifacts/*
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG_NAME="${GITHUB_REF_NAME}"
+          cat > RELEASE_NOTES.md <<EOF
+          # QXEngine Core ${TAG_NAME}
+
+          Open release for QXEngine Core.
+
+          Artifacts include the release install tree and SHA-256 checksums.
+          Verify downloads with:
+
+          \`\`\`sh
+          shasum -a 256 -c SHA256SUMS.txt
+          \`\`\`
+          EOF
+          gh release create "${TAG_NAME}" artifacts/* \
+            --verify-tag \
+            --title "QXEngine Core ${TAG_NAME}" \
+            --notes-file RELEASE_NOTES.md
