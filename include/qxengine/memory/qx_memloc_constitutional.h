@@ -155,6 +155,12 @@ QX_API QXResult qx_memloc_constitutional_create_config(
     QXMemlocConstitutional*       out_memloc
 );
 
+QX_API QXResult qx_memloc_constitutional_create_luman(
+    const QXConstitutionalConfig* config,
+    const QXLumanInitResult*      luman_result,
+    QXMemlocConstitutional*       out_memloc
+);
+
 /*
  * qx_memloc_constitutional_destroy
  *

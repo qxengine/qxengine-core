@@ -100,6 +100,19 @@ TEST(QXEngineConstitutional, CreateInitializesMemlocBridge) {
     EXPECT_GE(qx_bridge_health_score(&e->memloc_bridge), QX_SCORE_SOVEREIGN);
     EXPECT_EQ(qx_bridge_certification(&e->memloc_bridge),
               QX_CERTIFICATION_SOVEREIGN);
+    const QXMemlocPool* pool = &e->memloc_bridge.authority.pool;
+    const QXPoolSegmentRegion* img =
+        qx_pool_segment_region(pool, QX_SEGMENT_IMG);
+    const QXPoolSegmentRegion* net =
+        qx_pool_segment_region(pool, QX_SEGMENT_NET);
+    const QXPoolSegmentRegion* ai =
+        qx_pool_segment_region(pool, QX_SEGMENT_AI);
+    ASSERT_NE(img, nullptr);
+    ASSERT_NE(net, nullptr);
+    ASSERT_NE(ai, nullptr);
+    EXPECT_EQ(img->soft_limit_bytes, 26ULL * 1024ULL * 1024ULL);
+    EXPECT_EQ(net->soft_limit_bytes, 26ULL * 1024ULL * 1024ULL);
+    EXPECT_EQ(ai->soft_limit_bytes, 50ULL * 1024ULL * 1024ULL);
 
     qx_engine_destroy(engine);
 }

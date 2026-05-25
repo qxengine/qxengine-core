@@ -83,7 +83,9 @@ set(QX_CORE_SOURCES
     src/memory/qx_memloc.cpp
     src/memory/qx_luman_peringkat.c
     src/memory/qx_luman_budget.c
+    src/memory/qx_luman_init.c
     src/memory/qx_memloc_pool.c
+    src/memory/qx_memloc_pool_luman.c
     src/memory/qx_memloc_pool_commit.c
     src/memory/qx_memloc_pool_query.c
     src/memory/qx_memloc_flow_state.c
@@ -98,6 +100,7 @@ set(QX_CORE_SOURCES
     src/memory/qx_memloc_enforce_equil.c
     src/memory/qx_memloc_enforce_restore.c
     src/memory/qx_memloc_constitutional.c
+    src/memory/qx_memloc_constitutional_luman.c
     src/memory/qx_memloc_constitutional_report.c
     src/memory/qx_pressure.cpp
     src/memory/qx_pressure_api.cpp
@@ -120,6 +123,14 @@ set(QX_CORE_SOURCES
     src/telemetry/qx_telemetry.cpp
 )
 
+if(QX_PLATFORM_ANDROID OR ANDROID)
+    list(APPEND QX_CORE_SOURCES src/platform/qx_platform_ram_android.c)
+elseif(QX_PLATFORM_IOS OR CMAKE_SYSTEM_NAME STREQUAL "iOS")
+    list(APPEND QX_CORE_SOURCES src/platform/qx_platform_ram_ios.m)
+else()
+    list(APPEND QX_CORE_SOURCES src/platform/qx_platform_ram_host.c)
+endif()
+
 # ------------------------------------------------------------------------------
 # Core library header files (for IDE visibility)
 # ------------------------------------------------------------------------------
@@ -136,6 +147,7 @@ set(QX_CORE_HEADERS
     include/qxengine/memory/qx_segment.h
     include/qxengine/memory/qx_memloc.h
     include/qxengine/memory/qx_luman.h
+    include/qxengine/memory/qx_luman_init.h
     include/qxengine/memory/qx_memloc_pool.h
     include/qxengine/memory/qx_memloc_flow.h
     include/qxengine/memory/qx_memloc_signal.h
@@ -157,6 +169,7 @@ set(QX_CORE_HEADERS
     include/qxengine/telemetry/qx_telemetry_event_types.h
     include/qxengine/telemetry/qx_telemetry_types.h
     include/qxengine/telemetry/qx_telemetry.h
+    src/platform/qx_platform_ram.h
 )
 
 # ------------------------------------------------------------------------------

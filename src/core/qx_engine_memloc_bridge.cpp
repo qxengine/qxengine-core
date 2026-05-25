@@ -18,33 +18,20 @@
 
 namespace {
 
-double bridge_device_scale(QXSize device_ram_bytes) noexcept {
-    constexpr QXSize kGiB = 1024ULL * 1024ULL * 1024ULL;
-    if (device_ram_bytes >= 6ULL * kGiB) return 2.0;
-    if (device_ram_bytes > 0u && device_ram_bytes < 2ULL * kGiB) return 0.5;
-    return 1.0;
-}
-
 QXResult bridge_build_config(QXManifestHandle manifest,
-                             QXSize device_ram_bytes,
+                             const QXLumanInitResult& luman_result,
                              QXConstitutionalConfig* out) noexcept {
     if (!manifest || !out) return QX_ERR_NULL_HANDLE;
-
-    double soft_mb = 0.0;
-    double hard_mb = 0.0;
-    QXResult rc = qx_manifest_soft_limit_mb(manifest, &soft_mb);
-    if (rc != QX_OK) return rc;
-    rc = qx_manifest_hard_limit_mb(manifest, &hard_mb);
-    if (rc != QX_OK) return rc;
+    if (luman_result.initialized != QX_TRUE) return QX_ERR_INVALID_ARGUMENT;
 
     static char app_id[QX_MANIFEST_APP_ID_MAX];
     std::memset(app_id, 0, sizeof(app_id));
     qx_manifest_app_id(manifest, app_id);
 
     std::memset(out, 0, sizeof(*out));
-    out->soft_budget_bytes = static_cast<QXSize>(soft_mb * 1024.0 * 1024.0);
-    out->hard_budget_bytes = static_cast<QXSize>(hard_mb * 1024.0 * 1024.0);
-    out->device_scale = bridge_device_scale(device_ram_bytes);
+    out->soft_budget_bytes = luman_result.total_soft_bytes;
+    out->hard_budget_bytes = luman_result.total_hard_bytes;
+    out->device_scale = 1.0;
     out->declared_x = 1.0;
     out->tolerance_pct = 15.0;
     out->instance_label = app_id;
@@ -112,11 +99,21 @@ QXResult qx_bridge_create(QXEngineMemlocBridge* bridge,
     if (!bridge || !manifest) return QX_ERR_NULL_HANDLE;
 
     std::memset(bridge, 0, sizeof(*bridge));
-    QXConstitutionalConfig config{};
-    QXResult rc = bridge_build_config(manifest, device_ram_bytes, &config);
+
+    QXResult rc = (device_ram_bytes > 0u)
+        ? qx_luman_init_with_ram(device_ram_bytes, &bridge->luman_result)
+        : qx_luman_init(&bridge->luman_result);
     if (rc != QX_OK) return rc;
 
-    rc = qx_memloc_constitutional_create_config(&config, &bridge->authority);
+    QXConstitutionalConfig config{};
+    rc = bridge_build_config(manifest, bridge->luman_result, &config);
+    if (rc != QX_OK) return rc;
+
+    rc = qx_memloc_constitutional_create_luman(
+        &config,
+        &bridge->luman_result,
+        &bridge->authority
+    );
     if (rc != QX_OK) {
         std::memset(bridge, 0, sizeof(*bridge));
         return rc;

@@ -24,6 +24,7 @@
 #include "qxengine/core/qx_types.h"
 #include "qxengine/core/qx_error.h"
 #include "qxengine/core/qx_constants.h"
+#include "qxengine/memory/qx_luman_init.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -115,6 +116,11 @@ QX_API QXResult qx_pool_create(
     QXSize        hard_limit_bytes,
     double        device_scale,
     QXMemlocPool* out_pool
+);
+
+QX_API QXResult qx_pool_create_luman(
+    const QXLumanInitResult* luman_result,
+    QXMemlocPool*            out_pool
 );
 
 /*

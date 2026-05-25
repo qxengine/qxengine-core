@@ -107,6 +107,10 @@ qx_add_unit_test(test_qx_luman
     test_qx_luman.cpp
 )
 
+qx_add_unit_test(test_qx_luman_init
+    test_qx_luman_init.cpp
+)
+
 qx_add_unit_test(test_qx_pressure
     unit/test_qx_pressure.cpp
 )

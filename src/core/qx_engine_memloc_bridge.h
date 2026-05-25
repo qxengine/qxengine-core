@@ -14,6 +14,7 @@
 
 #include "qxengine/manifest/qx_manifest.h"
 #include "qxengine/memory/qx_memloc_constitutional.h"
+#include "qxengine/memory/qx_luman_init.h"
 
 #define QX_ENGINE_MEMLOC_BINDING_CAPACITY 512u
 #define QX_ENGINE_LEAF_ID_BYTES           37u
@@ -26,6 +27,7 @@ struct QXEngineMemlocBinding {
 
 struct QXEngineMemlocBridge {
     QXMemlocConstitutional  authority{};
+    QXLumanInitResult       luman_result{};
     QXConstitutionalReport  last_report{};
     QXEngineMemlocBinding   bindings[QX_ENGINE_MEMLOC_BINDING_CAPACITY]{};
     uint8_t                 last_pressure_tier{0u};
