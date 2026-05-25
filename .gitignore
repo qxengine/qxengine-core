@@ -1,0 +1,39 @@
+# Build outputs
+build/
+cmake-build-*/
+out/
+dist/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+CTestTestfile.cmake
+Testing/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+cmake_test_discovery_*.json
+
+# Generated dependencies
+_deps/
+
+# IDE / editor
+.DS_Store
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Reports
+coverage/
+reports/
+*.profraw
+*.profdata
+
+# Native artifacts
+*.a
+*.so
+*.dylib
+*.dll
+*.o
+*.obj

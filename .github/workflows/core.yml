@@ -1,0 +1,29 @@
+name: QXEngine Core
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  core:
+    name: Build and Test Core
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure
+        run: >
+          cmake -S . -B build
+          -DCMAKE_BUILD_TYPE=Debug
+          -DQX_BUILD_TESTS=ON
+
+      - name: Build
+        run: cmake --build build --config Debug
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Test integration label
+        run: ctest --test-dir build -L integration --output-on-failure

@@ -1,0 +1,39 @@
+# ==============================================================================
+# QXEngine Core – cmake/qxengineConfig.cmake.in
+# Owner:       Masa Bayu
+# Created:     2026-05-24
+# Description: CMake package config template.
+#              Auto-generated at configure time into qxengineConfig.cmake.
+#              Consumers find QXEngine with:
+#                find_package(qxengine REQUIRED)
+#                target_link_libraries(myapp PRIVATE qxengine::qxengine)
+# Repository:  https://github.com/qxengine/qxengine-core
+# ==============================================================================
+
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+# ------------------------------------------------------------------------------
+# Compute paths
+# ------------------------------------------------------------------------------
+set_and_check(QXENGINE_INCLUDE_DIR "@PACKAGE_QX_INSTALL_INCLUDEDIR@")
+set_and_check(QXENGINE_LIBRARY_DIR "@PACKAGE_QX_INSTALL_LIBDIR@")
+
+# ------------------------------------------------------------------------------
+# Import targets
+# ------------------------------------------------------------------------------
+if(NOT TARGET qxengine::qxengine)
+    include("${CMAKE_CURRENT_LIST_DIR}/qxengineTargets.cmake")
+endif()
+
+# ------------------------------------------------------------------------------
+# Compatibility variables
+# ------------------------------------------------------------------------------
+set(QXENGINE_FOUND        TRUE)
+set(QXENGINE_VERSION      "@PROJECT_VERSION@")
+set(QXENGINE_SPEC_VERSION "@QX_SPEC_VERSION@")
+set(QXENGINE_SCHEMA_URL   "@QX_SCHEMA_URL@")
+set(QXENGINE_OWNER        "@QX_OWNER@")
+
+check_required_components(qxengine)

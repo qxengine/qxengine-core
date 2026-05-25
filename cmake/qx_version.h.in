@@ -1,0 +1,43 @@
+/* ============================================================================
+ * QXEngine Core – qx_version.h  (auto-generated, do not edit)
+ * Owner:      @QX_OWNER@
+ * Created:    @QX_CREATED@
+ * Generated:  @CMAKE_CURRENT_SOURCE_DIR@
+ * Repository: @QX_REPOSITORY@
+ * ============================================================================
+ */
+
+#ifndef QX_VERSION_H
+#define QX_VERSION_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define QX_VERSION_MAJOR    @QX_VERSION_MAJOR@
+#define QX_VERSION_MINOR    @QX_VERSION_MINOR@
+#define QX_VERSION_PATCH    @QX_VERSION_PATCH@
+#define QX_VERSION_TWEAK    @QX_VERSION_TWEAK@
+
+#define QX_VERSION_STRING   "@QX_VERSION@"
+#define QX_SPEC_VERSION     "@QX_SPEC_VERSION@"
+#define QX_SCHEMA_URL       "@QX_SCHEMA_URL@"
+#define QX_OWNER            "@QX_OWNER@"
+#define QX_HOMEPAGE         "@QX_HOMEPAGE@"
+#define QX_ABI_VERSION      @QX_ABI_VERSION@
+
+/**
+ * @brief Runtime version check.
+ * Returns 1 if the runtime engine version matches the compile-time version.
+ */
+static inline int qx_version_check(int major, int minor, int patch) {
+    return (major == QX_VERSION_MAJOR &&
+            minor == QX_VERSION_MINOR &&
+            patch == QX_VERSION_PATCH) ? 1 : 0;
+}
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* QX_VERSION_H */
