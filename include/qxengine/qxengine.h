@@ -44,6 +44,7 @@ extern "C" {
 #include <qxengine/memory/qx_leaf.h>
 #include <qxengine/memory/qx_segment.h>
 #include <qxengine/memory/qx_memloc.h>
+#include <qxengine/memory/qx_luman.h>
 #include <qxengine/memory/qx_memloc_pool.h>
 #include <qxengine/memory/qx_memloc_flow.h>
 #include <qxengine/memory/qx_memloc_signal.h>

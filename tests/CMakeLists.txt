@@ -103,6 +103,10 @@ qx_add_unit_test(test_qx_memloc_constitutional_api
     test_qx_memloc_constitutional_api.cpp
 )
 
+qx_add_unit_test(test_qx_luman
+    test_qx_luman.cpp
+)
+
 qx_add_unit_test(test_qx_pressure
     unit/test_qx_pressure.cpp
 )

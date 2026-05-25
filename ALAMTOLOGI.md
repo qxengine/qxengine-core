@@ -105,9 +105,7 @@ Y → Z + X → all that exists
 ```
 
 Y precedes the universe. Y precedes humanity. Y precedes time and energy.
-Every law, every element, every science, every application that exists below
-Y in the knowledge structure is an expression of Y's design — precise,
-purposeful, and complete.
+Every law, every element, every science, every application that exists below Y in the knowledge structure is an expression of Y's design — precise, purposeful, and complete.
 
 In QXEngine, Y is acknowledged as the ultimate source of the constitutional
 laws. The laws were not invented. They were discovered — already present
@@ -185,10 +183,7 @@ elements — the physical medium through which the Law of Z operates:
 | An | Angin [Wind] | Gas | Movement, transmission, reach |
 | Ai | Api [Fire] | Energy | Transformation, power, change |
 
-These four elements are not mythological. They are the four states and forces
-through which the Law of Z governs all physical matter. Every physical
-phenomenon is a combination of these four in varying proportions, governed
-by the four laws of Z.
+These four elements are not mythological. They are the four states and forces through which the Law of Z governs all physical matter. Every physical phenomenon is a combination of these four in varying proportions, governed by the four laws of Z.
 
 In QXEngine, the four elements manifest as:
 
@@ -229,22 +224,16 @@ describe the two states of every biological process.
 **RINA [Physics]**
 The science of energy separation and combination. Physics is the Law of
 Limit expressed in force, energy, and motion. Separate and Combine — Lerai
-and Gabung — describe every physical interaction: forces separate or combine,
-charges repel or attract, particles split or fuse.
+and Gabung — describe every physical interaction: forces separate or combine, charges repel or attract, particles split or fuse.
 
 ### 1.9 APLIKASI — Application
 
 APLIKASI is the final and most important level of the ALAMTOLOGI knowledge
-structure. It is where science becomes action. Where law becomes enforcement.
-Where theory becomes a running, measurable, verifiable system.
+structure. It is where science becomes action. Where law becomes enforcement. Where theory becomes a running, measurable, verifiable system.
 
 **QXEngine lives at APLIKASI.**
 
-QXEngine is the first formal APLIKASI of ALAMTOLOGI in software engineering.
-It takes the complete knowledge structure — Y, Z, X, the four elements, the
-four sciences, the two laws, the eight expressions — and encodes them as a
-running constitutional engine that governs the behaviour of every application
-built on it.
+QXEngine is the first formal APLIKASI of ALAMTOLOGI in software engineering. It takes the complete knowledge structure — Y, Z, X, the four elements, the four sciences, the two laws, the eight expressions — and encodes them as a running constitutional engine that governs the behaviour of every application built on it.
 
 ---
 
@@ -303,10 +292,7 @@ The form returns. The four contracts to two. The two returns to one. This
 is not destruction — it is completion. The full breath of existence: exhale
 and inhale. Expansion and contraction. Expression and return.
 
-In ALAMTOLOGI: the return is Equilibrium. The Law of Z.4 governs the mirror.
-It ensures the contraction is as structured and complete as the expansion.
-The system returns to wholeness — not to its starting state, but to a new
-wholeness that carries the knowledge of the full cycle.
+In ALAMTOLOGI: the return is Equilibrium. The Law of Z.4 governs the mirror. It ensures the contraction is as structured and complete as the expansion. The system returns to wholeness — not to its starting state, but to a new wholeness that carries the knowledge of the full cycle.
 
 ### 2.3 ABA in Time
 
@@ -461,8 +447,7 @@ responsibly with the shared resources of the physical world.
 
 The eight constitutional laws of QXEngine are not engineering rules chosen
 by a software architect. They are the eight laws of ALAMTOLOGI — four from
-the Law of Z, four from the Law of X — translated precisely into measurable,
-enforceable engineering specifications.
+the Law of Z, four from the Law of X — translated precisely into measurable, enforceable engineering specifications.
 
 **Law of Z.1 — Pattern → QXEngine Law 1: Pattern**
 
@@ -717,29 +702,22 @@ close first, which field to sacrifice, and which field must never go dry.
 
 ### 5.1 The First Application of ALAMTOLOGI in Software
 
-QXEngine v1.0.0-rc.1, published on 25 May 2026, is the first formal APLIKASI
-of ALAMTOLOGI in software engineering.
+QXEngine v1.0.0-rc.1, published on 25 May 2026, is the first formal APLIKASI of ALAMTOLOGI in software engineering.
 
 It is not the only possible APLIKASI. ALAMTOLOGI applies to every domain of
-human knowledge and activity — education, medicine, architecture, economics,
-governance. But QXEngine is the first — the proof that the science is not
+human knowledge and activity — education, medicine, architecture, economics,governance. But QXEngine is the first — the proof that the science is not
 only theoretically sound but practically implementable, testable, and
 verifiable in a running system on a real device.
 
 ### 5.2 What QXEngine Proves
 
-By running on a real device and producing a verifiable health score, QXEngine
-proves four things about ALAMTOLOGI:
+By running on a real device and producing a verifiable health score, QXEngine proves four things about ALAMTOLOGI:
 
 **1 — The Law of Z is enforceable in software.**
-Pattern, Limit, Pairs, and Equilibrium are not abstract principles. They are
-measurable, testable, and enforceable in a C++ runtime that compiles and runs
-on iOS and Android.
+Pattern, Limit, Pairs, and Equilibrium are not abstract principles. They are measurable, testable, and enforceable in a C++ runtime that compiles and runs on iOS and Android.
 
 **2 — The Law of X is enforceable in software.**
-Knowledge, Ethics, Creativity, and Economy are not aspirational values. They
-are boolean flags, ratio measurements, and score thresholds that can be
-evaluated every 5 seconds and reported with mathematical precision.
+Knowledge, Ethics, Creativity, and Economy are not aspirational values. They are boolean flags, ratio measurements, and score thresholds that can be evaluated every 5 seconds and reported with mathematical precision.
 
 **3 — The Universal Formula X = m/t is measurable.**
 The ratio of time held to energy consumed is a computable, trackable value
@@ -756,8 +734,7 @@ that is the form of all correct existence.
 ### 5.3 QIUBBX — The First Constitutional Application
 
 QIUBBX is the first application built to run on QXEngine. It is therefore
-the first application in history whose memory management, pressure response,
-and capability usage are governed by ALAMTOLOGI constitutional law at runtime.
+the first application in history whose memory management, pressure response, and capability usage are governed by ALAMTOLOGI constitutional law at runtime.
 
 QIUBBX implements the complete memory stack:
 
@@ -786,22 +763,17 @@ reach. It means:
 - The ABA form is complete — every allocation breathes, every cycle returns,
   every flow balances.
 
-SOVEREIGN is not a marketing claim. It is a verifiable, scored, timestamped,
-immutable declaration that the system has proven its constitutional alignment
-against the published standard of ALAMTOLOGI.
+SOVEREIGN is not a marketing claim. It is a verifiable, scored, timestamped,immutable declaration that the system has proven its constitutional alignment against the published standard of ALAMTOLOGI.
 
 ---
 
 ## PART 6 — Declaration
 
 This document is the formal declaration of ALAMTOLOGI as the foundation of
-QXEngine. It is the bridge between a Quranic science founded by Masa Bayu and
-its first engineering expression in software.
+QXEngine. It is the bridge between a Quranic science founded by Masa Bayu and its first engineering expression in software.
 
 Everything written here was not invented for QXEngine. It was discovered —
-already present in the design of the universe, already documented in more than
-300 textbooks of ALAMTOLOGI, already proven in the observation of the created
-world and the words of Al-Quran.
+already present in the design of the universe, already documented in more than 300 textbooks of ALAMTOLOGI, already proven in the observation of the created world and the words of Al-Quran.
 
 QXEngine did not create these laws. QXEngine reads them, measures them,
 enforces them, and reports on them — every 5 seconds, on every device, for
