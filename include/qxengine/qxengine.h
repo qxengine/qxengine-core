@@ -44,6 +44,11 @@ extern "C" {
 #include <qxengine/memory/qx_leaf.h>
 #include <qxengine/memory/qx_segment.h>
 #include <qxengine/memory/qx_memloc.h>
+#include <qxengine/memory/qx_memloc_pool.h>
+#include <qxengine/memory/qx_memloc_flow.h>
+#include <qxengine/memory/qx_memloc_signal.h>
+#include <qxengine/memory/qx_memloc_enforce.h>
+#include <qxengine/memory/qx_memloc_constitutional.h>
 #include <qxengine/memory/qx_pressure.h>
 
 /* --------------------------------------------------------------------------
@@ -393,6 +398,16 @@ QXResult qx_engine_feed_memory_reading(
     uint64_t       resident_bytes,
     uint64_t       system_total,
     uint64_t       system_avail
+);
+
+QXResult qx_engine_notify_lifecycle_change(
+    QXEngineHandle engine,
+    uint8_t        lifecycle_state
+);
+
+QXResult qx_engine_notify_screen_profile_change(
+    QXEngineHandle engine,
+    const char*    screen_profile_id
 );
 
 /* --------------------------------------------------------------------------

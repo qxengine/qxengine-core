@@ -77,6 +77,9 @@ QXResult qx_engine_evaluate_now(QXEngineHandle engine)
     QXResult rc = qx_law_enforcer_evaluate(engine->enforcer, &input, &report);
     if (rc != QX_OK) return rc;
 
+    rc = qx_bridge_run_cycle(&engine->memloc_bridge, now, &report);
+    if (rc != QX_OK) return rc;
+
     engine->knowledge_score = report.health_score;
     engine->eval_count.fetch_add(1u, std::memory_order_relaxed);
 

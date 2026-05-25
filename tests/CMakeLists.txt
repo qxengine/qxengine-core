@@ -48,6 +48,7 @@ macro(qx_add_unit_test TEST_NAME SOURCE_FILE)
 
     gtest_discover_tests(${TEST_NAME}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        DISCOVERY_TIMEOUT 30
         PROPERTIES        TIMEOUT 30 LABELS unit
     )
 endmacro()
@@ -73,6 +74,7 @@ macro(qx_add_integration_test TEST_NAME SOURCE_FILE)
 
     gtest_discover_tests(${TEST_NAME}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        DISCOVERY_TIMEOUT 30
         PROPERTIES        TIMEOUT 60 LABELS integration
     )
 endmacro()
@@ -91,6 +93,14 @@ qx_add_unit_test(test_qx_segment
 
 qx_add_unit_test(test_qx_memloc
     unit/test_qx_memloc.cpp
+)
+
+qx_add_unit_test(test_qx_memloc_constitutional
+    test_qx_memloc_constitutional.cpp
+)
+
+qx_add_unit_test(test_qx_memloc_constitutional_api
+    test_qx_memloc_constitutional_api.cpp
 )
 
 qx_add_unit_test(test_qx_pressure
@@ -123,6 +133,14 @@ qx_add_unit_test(test_qx_telemetry
 
 qx_add_integration_test(test_full_evaluation_cycle
     integration/test_full_evaluation_cycle.cpp
+)
+
+qx_add_integration_test(test_qx_engine_constitutional
+    integration/test_qx_engine_constitutional.cpp
+)
+
+target_include_directories(test_qx_engine_constitutional PRIVATE
+    ${PROJECT_SOURCE_DIR}/src/core
 )
 
 qx_add_integration_test(test_manifest_validation

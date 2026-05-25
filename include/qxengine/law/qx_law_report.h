@@ -349,11 +349,15 @@ static inline QXBool qx_report_is_certified(const QXLawReport *report) {
  *        Returns QX_SEVERITY_INFO if there are no violations.
  */
 static inline QXSeverityId qx_report_worst_severity(const QXLawReport *report) {
-    if (!report || report->violation_count == 0u) return QX_SEVERITY_INFO;
     QXSeverityId worst = QX_SEVERITY_INFO;
-    for (uint32_t i = 0u; i < report->violation_count; ++i) {
-        if (report->violations[i].severity > worst)
+    uint32_t i;
+
+    if (!report || report->violation_count == 0u) return QX_SEVERITY_INFO;
+
+    for (i = 0u; i < report->violation_count; ++i) {
+        if (report->violations[i].severity > worst) {
             worst = report->violations[i].severity;
+        }
     }
     return worst;
 }
@@ -366,12 +370,16 @@ static inline const QXViolation *qx_report_find_violation(
     const QXLawReport *report,
     QXLawId            law_id
 ) {
-    if (!report) return nullptr;
-    for (uint32_t i = 0u; i < report->violation_count; ++i) {
-        if (report->violations[i].law_id == law_id)
+    uint32_t i;
+
+    if (!report) return NULL;
+
+    for (i = 0u; i < report->violation_count; ++i) {
+        if (report->violations[i].law_id == law_id) {
             return &report->violations[i];
+        }
     }
-    return nullptr;
+    return NULL;
 }
 
 

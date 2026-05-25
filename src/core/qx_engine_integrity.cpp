@@ -19,6 +19,7 @@ QXResult qx_engine_notify_memory_pressure(QXEngineHandle engine,
 
     QXPressureEvent pev{};
     const auto tier = static_cast<QXTierId>(pressure_level);
+    qx_bridge_notify_pressure(&engine->memloc_bridge, pressure_level);
     if (tier >= QX_TIER_ELEVATED) {
         return qx_pressure_evaluate_all(engine->pressure, tier, &pev);
     }
@@ -72,10 +73,42 @@ QXResult qx_engine_feed_memory_reading(QXEngineHandle engine,
                                          uint64_t       system_avail)
 {
     if (!engine) return QX_ERR_NULL_HANDLE;
-    return qx_pressure_feed_memory(engine->pressure,
-                                    static_cast<QXSize>(resident_bytes),
-                                    static_cast<QXSize>(system_total),
-                                    static_cast<QXSize>(system_avail));
+    QXResult rc = qx_pressure_feed_memory(engine->pressure,
+                                          static_cast<QXSize>(resident_bytes),
+                                          static_cast<QXSize>(system_total),
+                                          static_cast<QXSize>(system_avail));
+    if (rc == QX_OK && system_total > 0u) {
+        const uint64_t available = (system_avail > system_total)
+            ? system_total
+            : system_avail;
+        const double used = static_cast<double>(system_total - available)
+                          / static_cast<double>(system_total);
+        uint8_t tier = QX_TIER_NORMAL;
+        if (used >= 0.95) {
+            tier = QX_TIER_CRITICAL;
+        } else if (used >= 0.85) {
+            tier = QX_TIER_HIGH;
+        } else if (used >= 0.70) {
+            tier = QX_TIER_ELEVATED;
+        }
+        qx_bridge_notify_pressure(&engine->memloc_bridge, tier);
+    }
+    return rc;
+}
+
+QXResult qx_engine_notify_lifecycle_change(QXEngineHandle engine,
+                                           uint8_t lifecycle_state)
+{
+    if (!engine) return QX_ERR_NULL_HANDLE;
+    if (lifecycle_state > 1u) return QX_ERR_INVALID_ARGUMENT;
+    return qx_bridge_notify_lifecycle(&engine->memloc_bridge, lifecycle_state);
+}
+
+QXResult qx_engine_notify_screen_profile_change(QXEngineHandle engine,
+                                                const char* screen_profile_id)
+{
+    if (!engine || !screen_profile_id) return QX_ERR_NULL_HANDLE;
+    return qx_bridge_notify_screen(&engine->memloc_bridge, screen_profile_id);
 }
 
 QXResult qx_engine_mark_capability_active(QXEngineHandle engine,

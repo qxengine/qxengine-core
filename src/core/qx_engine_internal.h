@@ -20,6 +20,7 @@
 #include "qxengine/law/qx_law_enforcer_types.h"
 #include "qxengine/intelligence/qx_snapshot.h"
 #include "qxengine/telemetry/qx_telemetry.h"
+#include "qx_engine_memloc_bridge.h"
 
 #include <atomic>
 #include <cstring>
@@ -75,6 +76,7 @@ struct QXEngine_s {
     QXLawEnforcerHandle          enforcer;
     QXSnapshotHistoryHandle      snapshots;
     QXTelemetryHandle            telemetry;
+    QXEngineMemlocBridge         memloc_bridge;
 
     QXEngineState   state{QX_ENGINE_STATE_UNCONFIGURED};
     mutable std::shared_mutex state_mtx;

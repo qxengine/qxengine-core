@@ -74,12 +74,29 @@ set(QX_CORE_SOURCES
     src/core/qx_engine.cpp
     src/core/qx_engine_eval.cpp
     src/core/qx_engine_integrity.cpp
+    src/core/qx_engine_memloc_bridge.cpp
 
     # Memory
     src/memory/qx_leaf.cpp
     src/memory/qx_segment.cpp
     src/memory/qx_segment_api.cpp
     src/memory/qx_memloc.cpp
+    src/memory/qx_memloc_pool.c
+    src/memory/qx_memloc_pool_commit.c
+    src/memory/qx_memloc_pool_query.c
+    src/memory/qx_memloc_flow_state.c
+    src/memory/qx_memloc_flow_alloc.c
+    src/memory/qx_memloc_flow_budget.c
+    src/memory/qx_memloc_flow_trigger.c
+    src/memory/qx_memloc_signal_registry.c
+    src/memory/qx_memloc_signal_measure.c
+    src/memory/qx_memloc_signal_cycle.c
+    src/memory/qx_memloc_enforce_cycle.c
+    src/memory/qx_memloc_enforce_pressure.c
+    src/memory/qx_memloc_enforce_equil.c
+    src/memory/qx_memloc_enforce_restore.c
+    src/memory/qx_memloc_constitutional.c
+    src/memory/qx_memloc_constitutional_report.c
     src/memory/qx_pressure.cpp
     src/memory/qx_pressure_api.cpp
 
@@ -111,10 +128,16 @@ set(QX_CORE_HEADERS
     include/qxengine/core/qx_constants.h
     include/qxengine/core/qx_error.h
     include/qxengine/core/qx_version.h
+    src/core/qx_engine_memloc_bridge.h
 
     include/qxengine/memory/qx_leaf.h
     include/qxengine/memory/qx_segment.h
     include/qxengine/memory/qx_memloc.h
+    include/qxengine/memory/qx_memloc_pool.h
+    include/qxengine/memory/qx_memloc_flow.h
+    include/qxengine/memory/qx_memloc_signal.h
+    include/qxengine/memory/qx_memloc_enforce.h
+    include/qxengine/memory/qx_memloc_constitutional.h
     include/qxengine/memory/qx_pressure.h
 
     include/qxengine/law/qx_law_types.h

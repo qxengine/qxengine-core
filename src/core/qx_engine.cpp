@@ -158,10 +158,14 @@ QXResult qx_engine_create(const QXEngineConfig* config,
         if (rc != QX_OK) goto fail_snapshots;
     }
 
+    rc = qx_bridge_create(&e->memloc_bridge, manifest, config->device_ram_bytes);
+    if (rc != QX_OK) goto fail_telemetry;
+
     e->state = QX_ENGINE_STATE_CONFIGURED;
     *out_engine = e;
     return QX_OK;
 
+fail_telemetry:  qx_telemetry_destroy(e->telemetry);
 fail_snapshots:  qx_snapshot_history_destroy(e->snapshots);
 fail_enforcer:   qx_law_enforcer_destroy(e->enforcer);
 fail_pressure:   qx_pressure_destroy(e->pressure);
@@ -179,6 +183,7 @@ void qx_engine_destroy(QXEngineHandle engine)
     qx_law_enforcer_destroy(engine->enforcer);
     qx_pressure_destroy(engine->pressure);
     qx_memloc_destroy(engine->memloc);
+    qx_bridge_destroy(&engine->memloc_bridge);
     qx_manifest_destroy(engine->manifest);
     delete engine;
 }
@@ -192,6 +197,7 @@ QXResult qx_engine_start(QXEngineHandle engine)
     if (engine->state != QX_ENGINE_STATE_CONFIGURED &&
         engine->state != QX_ENGINE_STATE_PAUSED)   return QX_ERR_NOT_CONFIGURED;
     engine->state = QX_ENGINE_STATE_RUNNING;
+    qx_bridge_notify_lifecycle(&engine->memloc_bridge, 0u);
     return QX_OK;
 }
 
@@ -201,6 +207,7 @@ QXResult qx_engine_pause(QXEngineHandle engine)
     std::unique_lock lk(engine->state_mtx);
     if (engine->state != QX_ENGINE_STATE_RUNNING) return QX_ERR_NOT_READY;
     engine->state = QX_ENGINE_STATE_PAUSED;
+    qx_bridge_notify_lifecycle(&engine->memloc_bridge, 1u);
     return QX_OK;
 }
 
@@ -210,6 +217,7 @@ QXResult qx_engine_resume(QXEngineHandle engine)
     std::unique_lock lk(engine->state_mtx);
     if (engine->state != QX_ENGINE_STATE_PAUSED) return QX_ERR_NOT_READY;
     engine->state = QX_ENGINE_STATE_RUNNING;
+    qx_bridge_notify_lifecycle(&engine->memloc_bridge, 0u);
     return QX_OK;
 }
 
@@ -219,6 +227,7 @@ QXResult qx_engine_stop(QXEngineHandle engine)
     std::unique_lock lk(engine->state_mtx);
     if (engine->state == QX_ENGINE_STATE_STOPPED) return QX_ERR_ALREADY_STOPPED;
     engine->state = QX_ENGINE_STATE_STOPPED;
+    qx_bridge_notify_lifecycle(&engine->memloc_bridge, 1u);
     return QX_OK;
 }
 
@@ -261,10 +270,54 @@ QXResult qx_engine_allocate(QXEngineHandle  engine,
         return QX_ERR_LABEL_TOO_LONG;
     }
 
+    QXAllocationRequest request{};
+    request.label = label;
+    request.segment_id = segment_id;
+    request.slot_id = "engine";
+    request.size_bytes = size_bytes;
+    request.leaf_class = leaf_class;
+    request.purpose = "qx_engine_allocate";
+
+    QXConstitutionalAllocation constitutional_alloc{};
+    QXResult rc = qx_bridge_allocate(
+        &engine->memloc_bridge, &request, &constitutional_alloc);
+    if (rc != QX_OK) return rc;
+
     QXAllocResult ar{};
-    QXResult rc = qx_memloc_allocate(engine->memloc, label,
-                                      segment_id, leaf_class,
-                                      size_bytes, &ar);
+    rc = qx_memloc_allocate(engine->memloc, label,
+                            segment_id, leaf_class,
+                            size_bytes, &ar);
+    if (rc != QX_OK) {
+        qx_memloc_constitutional_deallocate(
+            &engine->memloc_bridge.authority,
+            constitutional_alloc.leaf_handle);
+        return rc;
+    }
+
+    char legacy_id[37]{};
+    rc = qx_leaf_id(ar.leaf, legacy_id);
+    if (rc != QX_OK) {
+        QXSize ignored = 0u;
+        qx_memloc_deallocate(engine->memloc, legacy_id, &ignored);
+        qx_memloc_constitutional_deallocate(
+            &engine->memloc_bridge.authority,
+            constitutional_alloc.leaf_handle);
+        return rc;
+    }
+
+    rc = qx_bridge_bind_legacy_leaf(
+        &engine->memloc_bridge,
+        legacy_id,
+        constitutional_alloc.leaf_handle);
+    if (rc != QX_OK) {
+        QXSize ignored = 0u;
+        qx_memloc_deallocate(engine->memloc, legacy_id, &ignored);
+        qx_memloc_constitutional_deallocate(
+            &engine->memloc_bridge.authority,
+            constitutional_alloc.leaf_handle);
+        return rc;
+    }
+
     if (rc == QX_OK) {
         *out_leaf = ar.leaf;
         engine->alloc_count.fetch_add(1u, std::memory_order_relaxed);
@@ -295,6 +348,7 @@ QXResult qx_engine_deallocate(QXEngineHandle engine, const char* leaf_id)
     QXSize freed = 0u;
     QXResult rc = qx_memloc_deallocate(engine->memloc, leaf_id, &freed);
     if (rc == QX_OK) {
+        qx_bridge_deallocate_legacy(&engine->memloc_bridge, leaf_id);
         engine->free_count.fetch_add(1u, std::memory_order_relaxed);
 
         QXTelemetryEventInput ev{};
